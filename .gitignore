@@ -7,6 +7,7 @@ data/*.db-shm
 data/ncm-cookies.txt
 audio-cache/
 cache/tts/
+NeteaseCloudMusicApi/
 .DS_Store
 .thumbnails/
 renders/
