@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 300;
+      src: url('fonts/SpaceGrotesk-Light.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      src: url('fonts/SpaceGrotesk-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 500;
+      src: url('fonts/SpaceGrotesk-Medium.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      src: url('fonts/SpaceGrotesk-Bold.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Space Mono';
+      font-style: normal;
+      font-weight: 400;
+      src: url('fonts/SpaceMono-Regular.ttf') format('truetype');
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #0a0a0f;
+      font-family: "Space Grotesk", sans-serif;
+      color: #e8e8f0;
+    }
+    .scene {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+    }
+    #s1 { z-index: 1; }
+    #s2 { z-index: 2; opacity: 0; }
+    #s3 { z-index: 3; opacity: 0; }
+    #s4 { z-index: 4; opacity: 0; }
+    #s5 { z-index: 5; opacity: 0; }
+    #s6 { z-index: 6; opacity: 0; }
+    #s7 { z-index: 7; opacity: 0; }
+    #s8 { z-index: 8; opacity: 0; }
+
+    /* ====== Scene Content Layout ====== */
+    .scene-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 100px 160px;
+      gap: 16px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* ====== Typography ====== */
+    .font-mono { font-family: "Space Mono", monospace; }
+    .logo {
+      font-size: 148px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: #e8e8f0;
+    }
+    .logo-accent {
+      background: linear-gradient(135deg, #6c63ff 0%, #00d4ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      font-size: 36px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: rgba(232, 232, 240, 0.6);
+      font-family: "Space Grotesk", sans-serif;
+    }
+    .tagline-mono {
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: rgba(232, 232, 240, 0.65);
+      font-family: "Space Mono", monospace;
+    }
+    .statement {
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      color: #e8e8f0;
+    }
+    .statement-dash {
+      font-size: 36px;
+      color: #6c63ff;
+      font-weight: 300;
+      font-family: "Space Mono", monospace;
+    }
+    .statement-final {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      color: #e8e8f0;
+    }
+    .highlight-purple {
+      color: #6c63ff;
+    }
+    .highlight-cyan {
+      color: #00d4ff;
+    }
+    .host-name {
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #e8e8f0;
+      line-height: 1;
+    }
+    .host-sub {
+      font-size: 28px;
+      font-weight: 300;
+      color: rgba(232, 232, 240, 0.5);
+      font-family: "Space Mono", monospace;
+      letter-spacing: 0.08em;
+    }
+    .host-tags {
+      font-size: 24px;
+      font-weight: 400;
+      color: rgba(232, 232, 240, 0.65);
+      line-height: 1.6;
+    }
+    .host-tags .sep {
+      color: #6c63ff;
+      margin: 0 12px;
+    }
+    .pill-tag {
+      display: inline-block;
+      font-family: "Space Mono", monospace;
+      font-size: 18px;
+      padding: 8px 20px;
+      border: 1.5px solid rgba(108, 99, 255, 0.4);
+      border-radius: 100px;
+      color: rgba(232, 232, 240, 0.85);
+      letter-spacing: 0.04em;
+      background: rgba(108, 99, 255, 0.08);
+    }
+    .pill-tag.highlight {
+      border-color: #00d4ff;
+      background: rgba(0, 212, 255, 0.1);
+      color: #00d4ff;
+    }
+    .section-title {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #e8e8f0;
+    }
+    .section-label {
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: #6c63ff;
+      font-family: "Space Mono", monospace;
+    }
+
+    /* ====== Decorative ====== */
+    .ghost-text {
+      position: absolute;
+      font-size: 200px;
+      font-weight: 700;
+      color: rgba(108, 99, 255, 0.04);
+      letter-spacing: -0.04em;
+      pointer-events: none;
+      line-height: 1;
+      user-select: none;
+    }
+    .ghost-text.cyan {
+      color: rgba(0, 212, 255, 0.04);
+    }
+
+    .radial-glow {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+    }
+
+    .hairline {
+      height: 1.5px;
+      background: rgba(108, 99, 255, 0.2);
+      width: 100%;
+    }
+    .hairline.cyan {
+      background: rgba(0, 212, 255, 0.2);
+    }
+
+    .bottom-label {
+      position: absolute;
+      bottom: 40px;
+      left: 160px;
+      font-family: "Space Mono", monospace;
+      font-size: 16px;
+      letter-spacing: 0.15em;
+      color: rgba(232, 232, 240, 0.5);
+    }
+    .bottom-label.right {
+      left: auto;
+      right: 160px;
+    }
+
+    /* ====== S1: Radio Wave Rings ====== */
+    .wave-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(108, 99, 255, 0.12);
+      pointer-events: none;
+    }
+
+    /* ====== S2: Divider lines ====== */
+    .s-divider {
+      width: 60px;
+      height: 1.5px;
+      background: rgba(108, 99, 255, 0.3);
+    }
+
+    /* ====== S4: Timeline ====== */
+    .timeline-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: rgba(232, 232, 240, 0.08);
+      border-radius: 2px;
+      margin: 20px 0;
+    }
+    .timeline-progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6c63ff, #00d4ff);
+      border-radius: 2px;
+    }
+    .slot-card {
+      display: inline-flex;
+      flex-direction: column;
+      padding: 16px 20px;
+      border-radius: 8px;
+      background: rgba(232, 232, 240, 0.04);
+      border: 1px solid rgba(232, 232, 240, 0.06);
+      min-width: 140px;
+    }
+    .slot-card.active {
+      background: rgba(108, 99, 255, 0.12);
+      border-color: rgba(108, 99, 255, 0.3);
+    }
+    .slot-time {
+      font-family: "Space Mono", monospace;
+      font-size: 14px;
+      color: rgba(232, 232, 240, 0.6);
+      letter-spacing: 0.05em;
+    }
+    .slot-name {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(232, 232, 240, 0.8);
+      margin-top: 4px;
+    }
+    .slot-card.active .slot-name {
+      color: #e8e8f0;
+      font-weight: 700;
+    }
+
+    /* ====== S5: Chat ====== */
+    .bubble {
+      padding: 18px 28px;
+      border-radius: 16px;
+      max-width: 65%;
+      font-size: 22px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+    .bubble.user {
+      background: rgba(108, 99, 255, 0.15);
+      border: 1px solid rgba(108, 99, 255, 0.25);
+      align-self: flex-end;
+      color: #e8e8f0;
+    }
+    .bubble.codio {
+      background: rgba(232, 232, 240, 0.06);
+      border: 1px solid rgba(232, 232, 240, 0.1);
+      align-self: flex-start;
+      color: #e8e8f0;
+    }
+    .bubble-label {
+      font-family: "Space Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: rgba(232, 232, 240, 0.5);
+    }
+    .fb-btn {
+      display: inline-block;
+      padding: 6px 16px;
+      border: 1px solid rgba(232, 232, 240, 0.12);
+      border-radius: 100px;
+      font-family: "Space Mono", monospace;
+      font-size: 14px;
+      color: rgba(232, 232, 240, 0.55);
+      background: transparent;
+      margin-right: 8px;
+    }
+
+    /* ====== S6: Tech tags ====== */
+    .tech-tag {
+      display: inline-block;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-family: "Space Mono", monospace;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      background: rgba(232, 232, 240, 0.04);
+      border: 1px solid rgba(232, 232, 240, 0.08);
+      color: rgba(232, 232, 240, 0.7);
+    }
+    .tech-tag.purple {
+      border-color: rgba(108, 99, 255, 0.25);
+      color: #6c63ff;
+    }
+    .tech-tag.cyan {
+      border-color: rgba(0, 212, 255, 0.25);
+      color: #00d4ff;
+    }
+
+    /* ====== S7: Source Items ====== */
+    .source-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+    }
+    .source-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: rgba(232, 232, 240, 0.05);
+      border: 1px solid rgba(232, 232, 240, 0.08);
+    }
+    .source-label {
+      font-size: 22px;
+      font-weight: 400;
+      color: rgba(232, 232, 240, 0.7);
+    }
+    .source-desc {
+      font-family: "Space Mono", monospace;
+      font-size: 16px;
+      color: rgba(232, 232, 240, 0.55);
+    }
+
+    /* ====== S8: CTA ====== */
+    .cta-title {
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: #e8e8f0;
+    }
+    .cta-url {
+      font-family: "Space Mono", monospace;
+      font-size: 28px;
+      color: #6c63ff;
+      letter-spacing: 0.04em;
+    }
+    .cta-status {
+      font-family: "Space Mono", monospace;
+      font-size: 18px;
+      letter-spacing: 0.2em;
+      color: rgba(0, 212, 255, 0.5);
+    }
+    .pulse-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(108, 99, 255, 0.1);
+      pointer-events: none;
+    }
+
+    /* ====== Overlay ====== */
+    #fade-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1920px; height: 1080px;
+      background: #0a0a0f;
+      pointer-events: none;
+      z-index: 20;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="main" data-width="1920" data-height="1080" data-start="0" data-duration="48">
+    <!-- ====== SCENE 1: Brand Opening (0-5s) ====== -->
+    <div id="s1" class="scene">
+      <!-- BG Glow -->
+      <div id="s1-glow" class="radial-glow" style="width:800px;height:800px;background:rgba(108,99,255,0.12);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <!-- Radio wave rings -->
+      <div id="s1-ring1" class="wave-ring" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+      <div id="s1-ring2" class="wave-ring" style="width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+      <div id="s1-ring3" class="wave-ring" style="width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <!-- Frequency bars -->
+      <div id="s1-freq" style="position:absolute;bottom:100px;left:50%;transform:translateX(-50%);display:flex;gap:4px;align-items:flex-end;height:40px;">
+        <div style="width:3px;height:12px;background:rgba(108,99,255,0.2);border-radius:1.5px;"></div>
+        <div style="width:3px;height:24px;background:rgba(108,99,255,0.25);border-radius:1.5px;"></div>
+        <div style="width:3px;height:8px;background:rgba(108,99,255,0.15);border-radius:1.5px;"></div>
+        <div style="width:3px;height:32px;background:rgba(108,99,255,0.3);border-radius:1.5px;"></div>
+        <div style="width:3px;height:16px;background:rgba(108,99,255,0.2);border-radius:1.5px;"></div>
+        <div style="width:3px;height:28px;background:rgba(108,99,255,0.25);border-radius:1.5px;"></div>
+        <div style="width:3px;height:10px;background:rgba(108,99,255,0.15);border-radius:1.5px;"></div>
+      </div>
+
+      <!-- Corner accents -->
+      <div style="position:absolute;top:40px;left:40px;width:40px;height:40px;border-top:2px solid rgba(108,99,255,0.15);border-left:2px solid rgba(108,99,255,0.15);pointer-events:none;"></div>
+      <div style="position:absolute;top:40px;right:40px;width:40px;height:40px;border-top:2px solid rgba(108,99,255,0.15);border-right:2px solid rgba(108,99,255,0.15);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:40px;left:40px;width:40px;height:40px;border-bottom:2px solid rgba(108,99,255,0.15);border-left:2px solid rgba(108,99,255,0.15);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:40px;right:40px;width:40px;height:40px;border-bottom:2px solid rgba(108,99,255,0.15);border-right:2px solid rgba(108,99,255,0.15);pointer-events:none;"></div>
+
+      <div class="scene-content" style="align-items:center;text-align:center;">
+        <div id="s1-logo" class="logo">
+          coldio<span class="logo-accent">.</span>
+        </div>
+        <div id="s1-tagline" class="tagline" style="margin-top:12px;">
+          Your Private AI Radio. 24/7.
+        </div>
+        <div id="s1-mono" class="tagline-mono" style="margin-top:4px;">
+          私人 AI 电台 · 永不离线
+        </div>
+      </div>
+      <div id="s1-label" class="bottom-label">CODIO FM</div>
+      <div class="bottom-label right">ALPHA</div>
+    </div>
+
+    <!-- ====== SCENE 2: Concept (5-12s) ====== -->
+    <div id="s2" class="scene">
+      <div id="s2-glow" class="radial-glow" data-layout-allow-overflow style="width:700px;height:700px;background:rgba(0,212,255,0.08);top:30%;right:-100px;"></div>
+      <div id="s2-ghost" class="ghost-text cyan" data-layout-allow-overflow style="bottom:-40px;right:-40px;font-size:280px;">AI RADIO</div>
+
+      <div class="scene-content">
+        <div id="s2-label-top" class="section-label" style="margin-bottom:20px;">CONCEPT</div>
+        <div id="s2-line1" class="hairline" style="width:80px;"></div>
+
+        <div id="s2-statement1" style="margin-top:24px;">
+          <span class="statement-dash">01</span>
+          <span class="statement" style="margin-left:20px;">不是音乐播放器</span>
+        </div>
+        <div id="s2-div1" class="s-divider" style="margin-left:108px;margin-top:4px;"></div>
+
+        <div id="s2-statement2">
+          <span class="statement-dash">02</span>
+          <span class="statement" style="margin-left:20px;">不是聊天 App</span>
+        </div>
+        <div id="s2-div2" class="s-divider" style="margin-left:108px;margin-top:4px;"></div>
+
+        <div id="s2-statement3">
+          <span class="statement-dash">03</span>
+          <span class="statement" style="margin-left:20px;">不是后台控制台</span>
+        </div>
+
+        <div id="s2-final" style="margin-top:20px;">
+          <div class="hairline cyan" style="width:120px;margin-bottom:20px;"></div>
+          <div class="statement-final">
+            是<span class="highlight-purple">三者融合</span>的<br/>
+            私人 <span class="highlight-cyan">AI 电台</span>终端
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SCENE 3: AI Host Codio (12-18s) ====== -->
+    <div id="s3" class="scene">
+      <div id="s3-glow" class="radial-glow" style="width:600px;height:600px;background:rgba(108,99,255,0.1);top:20%;left:50%;transform:translateX(-50%);"></div>
+      <div id="s3-ghost" class="ghost-text" data-layout-allow-overflow style="bottom:-20px;right:-30px;font-size:300px;">CODIO</div>
+
+      <div class="scene-content">
+        <div id="s3-label-top" class="section-label" style="margin-bottom:8px;">AI HOST</div>
+        <div id="s3-name" class="host-name">
+          Codio<span class="highlight-purple" style="font-weight:300;font-family:Space Mono,monospace;font-size:72px;">_</span>
+        </div>
+        <div id="s3-tags" class="host-tags" style="margin-top:8px;">
+          冷静 <span class="sep">·</span> 亲密 <span class="sep">·</span> 有品味 <span class="sep">·</span> 略带深夜感
+        </div>
+        <div id="s3-desc" class="host-sub" style="margin-top:20px;">
+          DeepSeek 驱动 · 6 时段自适应 · 天气感知
+        </div>
+        <div id="s3-caps" style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+          <span class="pill-tag">时段感知</span>
+          <span class="pill-tag highlight">天气感知</span>
+          <span class="pill-tag">意图理解</span>
+          <span class="pill-tag highlight">语音合成</span>
+          <span class="pill-tag">Track Commentary</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SCENE 4: 24h Programming (18-24s) ====== -->
+    <div id="s4" class="scene">
+      <div id="s4-glow" class="radial-glow" data-layout-allow-overflow style="width:500px;height:500px;background:rgba(0,212,255,0.06);bottom:-100px;left:50%;"></div>
+      <div id="s4-ghost" class="ghost-text" data-layout-allow-overflow style="top:-40px;left:-60px;font-size:240px;">SCHEDULE</div>
+
+      <div class="scene-content">
+        <div id="s4-label-top" class="section-label" style="margin-bottom:4px;">24H PROGRAMMING</div>
+        <div id="s4-title" class="section-title" style="margin-bottom:8px;">
+          每日 <span class="highlight-cyan">6 时段</span> 自适应编排
+        </div>
+
+        <!-- Timeline -->
+        <div id="s4-timeline" class="timeline-track" style="margin-top:16px;">
+          <div id="s4-progress" class="timeline-progress"></div>
+        </div>
+
+        <!-- Slot cards -->
+        <div id="s4-slots" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <div class="slot-card active" data-slot="morning">
+            <span class="slot-time">07:00-09:00</span>
+            <span class="slot-name">Morning Wake</span>
+          </div>
+          <div class="slot-card" data-slot="deep">
+            <span class="slot-time">09:00-12:00</span>
+            <span class="slot-name">Deep Work</span>
+          </div>
+          <div class="slot-card" data-slot="noon">
+            <span class="slot-time">12:00-13:30</span>
+            <span class="slot-name">Noon Breath</span>
+          </div>
+          <div class="slot-card" data-slot="afternoon">
+            <span class="slot-time">13:30-18:00</span>
+            <span class="slot-name">Afternoon Drive</span>
+          </div>
+          <div class="slot-card" data-slot="evening">
+            <span class="slot-time">18:00-21:00</span>
+            <span class="slot-name">Evening Soften</span>
+          </div>
+          <div class="slot-card" data-slot="night">
+            <span class="slot-time">21:00-00:00</span>
+            <span class="slot-name">Night Close</span>
+          </div>
+        </div>
+
+        <div id="s4-note" style="margin-top:12px;display:flex;gap:20px;align-items:center;">
+          <span class="tech-tag" style="font-size:14px;padding:6px 16px;border-color:rgba(108,99,255,0.2);">
+            8 因子加权评分
+          </span>
+          <span class="tech-tag" style="font-size:14px;padding:6px 16px;border-color:rgba(0,212,255,0.2);">
+            Weather Aware
+          </span>
+          <span class="tech-tag" style="font-size:14px;padding:6px 16px;border-color:rgba(232,232,240,0.1);">
+            Routine 集成
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SCENE 5: Chat & Feedback (24-30s) ====== -->
+    <div id="s5" class="scene">
+      <div id="s5-glow1" class="radial-glow" style="width:400px;height:400px;background:rgba(108,99,255,0.06);top:30%;left:20%;"></div>
+      <div id="s5-glow2" class="radial-glow" style="width:350px;height:350px;background:rgba(0,212,255,0.04);bottom:20%;right:10%;"></div>
+      <div id="s5-ghost" class="ghost-text" data-layout-allow-overflow style="top:20px;right:-20px;font-size:200px;">CHAT</div>
+
+      <div class="scene-content">
+        <div id="s5-label-top" class="section-label" style="margin-bottom:8px;">CHAT &amp; FEEDBACK</div>
+
+        <!-- Chat area -->
+        <div id="s5-chat" style="display:flex;flex-direction:column;gap:12px;margin-top:8px;max-width:80%;">
+          <!-- User message -->
+          <div style="display:flex;flex-direction:column;align-items:flex-end;">
+            <div id="s5-bubble-user-label" class="bubble-label">你</div>
+            <div class="bubble user">放点适合工作的音乐</div>
+          </div>
+          <!-- Codio message -->
+          <div style="display:flex;flex-direction:column;align-items:flex-start;">
+            <div id="s5-bubble-codio-label" class="bubble-label" style="color:rgba(108,99,255,0.5);">Codio</div>
+            <div class="bubble codio">
+              切换到 Deep Work 时段。<br/>
+              选了器乐和轻电子方向，稳定律动，适合专注。
+            </div>
+          </div>
+        </div>
+
+        <!-- Feedback row -->
+        <div id="s5-feedback" style="display:flex;gap:8px;margin-top:4px;margin-left:56px;align-items:center;">
+          <span class="fb-btn">喜欢</span>
+          <span class="fb-btn">不喜欢</span>
+          <span class="fb-btn">多来点</span>
+          <span class="fb-btn">少推荐</span>
+          <span class="tagline-mono" style="font-size:14px;margin-left:8px;">→ 影响推荐算法</span>
+        </div>
+
+        <!-- Stats -->
+        <div id="s5-stats" style="display:flex;gap:32px;margin-top:16px;">
+          <div>
+            <div style="font-family:Space Mono,monospace;font-size:28px;color:#6c63ff;font-variant-numeric:tabular-nums;">4</div>
+            <div class="tagline-mono" style="font-size:14px;color:rgba(232,232,240,0.55);">意图类型</div>
+          </div>
+          <div>
+            <div style="font-family:Space Mono,monospace;font-size:28px;color:#00d4ff;font-variant-numeric:tabular-nums;">6</div>
+            <div class="tagline-mono" style="font-size:14px;color:rgba(232,232,240,0.55);">时段风格</div>
+          </div>
+          <div>
+            <div style="font-family:Space Mono,monospace;font-size:28px;color:rgba(232,232,240,0.6);font-variant-numeric:tabular-nums;">24/7</div>
+            <div class="tagline-mono" style="font-size:14px;color:rgba(232,232,240,0.55);">永续播放</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SCENE 6: Music Sources (30-34s) ====== -->
+    <div id="s6" class="scene">
+      <div id="s6-glow" class="radial-glow" data-layout-allow-overflow style="width:600px;height:600px;background:rgba(108,99,255,0.08);top:50%;right:-150px;"></div>
+      <div id="s6-ghost" class="ghost-text" data-layout-allow-overflow style="bottom:-30px;left:-50px;font-size:260px;">SOURCES</div>
+
+      <div class="scene-content">
+        <div id="s6-label-top" class="section-label" style="margin-bottom:8px;">MUSIC SOURCES</div>
+        <div id="s6-title" class="section-title" style="margin-bottom:4px;">
+          多源融合播放引擎
+        </div>
+
+        <div id="s6-sources" style="display:flex;flex-direction:column;gap:4px;margin-top:16px;">
+          <div class="source-item">
+            <div class="source-icon" style="color:#6c63ff;">♪</div>
+            <div>
+              <div class="source-label">本地文件扫描</div>
+              <div class="source-desc">mp3 / flac / m4a / wav / ogg · 智能元数据推断</div>
+            </div>
+          </div>
+          <div class="source-item">
+            <div class="source-icon" style="color:#00d4ff;">☁</div>
+            <div>
+              <div class="source-label">网易云音乐</div>
+              <div class="source-desc">在线搜索 · 歌单导入 · 歌词同步 · 热评获取</div>
+            </div>
+          </div>
+          <div class="source-item">
+            <div class="source-icon" style="color:rgba(232,232,240,0.55);">⊞</div>
+            <div>
+              <div class="source-label">TTS 语音合成</div>
+              <div class="source-desc">火山引擎 TTS · 浏览器 speechSynthesis 回退</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SCENE 7: Tech Stack (34-38s) ====== -->
+    <div id="s7" class="scene">
+      <!-- Grid pattern -->
+      <div id="s7-grid" style="position:absolute;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(108,99,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;"></div>
+      <div id="s7-glow" class="radial-glow" style="width:500px;height:500px;background:rgba(0,212,255,0.06);top:10%;left:50%;transform:translateX(-50%);"></div>
+      <div id="s7-ghost" class="ghost-text" data-layout-allow-overflow style="top:-20px;right:-30px;font-size:220px;">TECH</div>
+
+      <div class="scene-content">
+        <div id="s7-label-top" class="section-label" style="margin-bottom:8px;">TECH STACK</div>
+        <div id="s7-title" class="section-title" style="margin-bottom:8px;">
+          纯前端 · 强大后端
+        </div>
+
+        <div id="s7-tags" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;max-width:90%;">
+          <span class="tech-tag purple">Node.js</span>
+          <span class="tech-tag cyan">Express</span>
+          <span class="tech-tag" style="border-color:rgba(232,232,240,0.1);">SQLite</span>
+          <span class="tech-tag purple">WebSocket</span>
+          <span class="tech-tag cyan">DeepSeek</span>
+          <span class="tech-tag" style="border-color:rgba(232,232,240,0.1);">Vanilla JS</span>
+          <span class="tech-tag purple">PWA</span>
+          <span class="tech-tag cyan">Web Audio API</span>
+          <span class="tech-tag" style="border-color:rgba(232,232,240,0.1);">better-sqlite3</span>
+          <span class="tech-tag purple">OpenWeatherMap</span>
+        </div>
+
+        <div id="s7-arch" style="margin-top:20px;">
+          <div class="hairline" style="width:60px;margin-bottom:12px;"></div>
+          <div style="display:flex;gap:60px;">
+            <div>
+              <div class="tagline-mono" style="font-size:13px;color:rgba(232,232,240,0.5);">FRONTEND</div>
+              <div style="font-size:20px;font-weight:500;margin-top:4px;">HTML · CSS · JS</div>
+            </div>
+            <div>
+              <div class="tagline-mono" style="font-size:13px;color:rgba(232,232,240,0.5);">BACKEND</div>
+              <div style="font-size:20px;font-weight:500;margin-top:4px;">Express · SQLite · WS</div>
+            </div>
+            <div>
+              <div class="tagline-mono" style="font-size:13px;color:rgba(232,232,240,0.5);">AI</div>
+              <div style="font-size:20px;font-weight:500;margin-top:4px;">DeepSeek · TTS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SCENE 8: CTA (38-42s) ====== -->
+    <div id="s8" class="scene">
+      <div id="s8-glow" class="radial-glow" style="width:900px;height:900px;background:rgba(108,99,255,0.12);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+      <div id="s8-ring" class="pulse-ring" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+      <div id="s8-ring2" class="pulse-ring" style="width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <div class="scene-content" style="align-items:center;text-align:center;">
+        <div id="s8-cta" class="cta-title">
+          Start Your<br/>
+          <span class="logo-accent">Private Radio</span>
+        </div>
+        <div id="s8-url" class="cta-url" style="margin-top:20px;">
+          http://localhost:3001
+        </div>
+        <div id="s8-status" class="cta-status" style="margin-top:12px;">
+          CODIO FM. CONNECTED.
+        </div>
+      </div>
+      <div class="bottom-label" style="left:50%;transform:translateX(-50%);text-align:center;">
+        npm install &amp;&amp; node server/index.js
+      </div>
+    </div>
+
+    <!-- Audio narration tracks -->
+    <audio id="audio-s1" data-start="0.3" data-duration="4.5" data-track-index="5" src="voiceover/s1-opening.mp3" data-volume="1"></audio>
+    <audio id="audio-s2" data-start="5.8" data-duration="6.9" data-track-index="5" src="voiceover/s2-concept.mp3" data-volume="1"></audio>
+    <audio id="audio-s3" data-start="13.0" data-duration="6.9" data-track-index="5" src="voiceover/s3-host.mp3" data-volume="1"></audio>
+    <audio id="audio-s4" data-start="20.0" data-duration="5.9" data-track-index="5" src="voiceover/s4-program.mp3" data-volume="1"></audio>
+    <audio id="audio-s5" data-start="27.0" data-duration="5.1" data-track-index="5" src="voiceover/s5-chat.mp3" data-volume="1"></audio>
+    <audio id="audio-s6" data-start="33.5" data-duration="5.1" data-track-index="5" src="voiceover/s6-source.mp3" data-volume="1"></audio>
+    <audio id="audio-s7" data-start="39.5" data-duration="5.7" data-track-index="5" src="voiceover/s7-tech.mp3" data-volume="1"></audio>
+    <audio id="audio-s8" data-start="46.5" data-duration="3.7" data-track-index="5" src="voiceover/s8-cta.mp3" data-volume="1"></audio>
+
+    <!-- Fade overlay -->
+    <div id="fade-overlay"></div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    /* ─────────── HELPERS ─────────── */
+    function transitionScene(from, to, t, duration) {
+      var d = duration || 0.45;
+      tl.to("#s" + from, { opacity: 0, filter: "blur(10px)", duration: d, ease: "power2.in" }, t);
+      tl.set("#s" + from, { visibility: "hidden" }, t + d + 0.05);
+      tl.to("#s" + to, { opacity: 1, duration: d, ease: "power2.out" }, t + 0.08);
+    }
+
+    /* ─────────── SCENE 1: Brand Opening (0-5s) ─────────── */
+    tl.fromTo("#s1-logo", { y: 60, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }, 0.3);
+    tl.fromTo("#s1-logo .logo-accent", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.6);
+    tl.fromTo("#s1-tagline", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 0.8);
+    tl.fromTo("#s1-mono", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "sine.out" }, 1.1);
+    tl.fromTo("#s1-ring1", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: "expo.out" }, 0.4);
+    tl.fromTo("#s1-ring2", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: "expo.out" }, 0.6);
+    tl.fromTo("#s1-ring3", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: "expo.out" }, 0.8);
+    tl.fromTo("#s1-glow", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: "power2.out" }, 0.2);
+    tl.fromTo("#s1-freq", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 1.5);
+    tl.fromTo("#s1-label", { x: -20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 1.7);
+    tl.to("#s1-ring1", { scale: 1.03, opacity: 0.7, duration: 2, yoyo: true, repeat: 1, ease: "sine.inOut" }, 1.5);
+    tl.to("#s1-ring2", { scale: 1.05, opacity: 0.6, duration: 2, yoyo: true, repeat: 1, ease: "sine.inOut" }, 1.7);
+    tl.to("#s1-ring3", { scale: 1.08, opacity: 0.5, duration: 2, yoyo: true, repeat: 1, ease: "sine.inOut" }, 1.9);
+    transitionScene(1, 2, 5.0);
+
+    /* ─────────── SCENE 2: Concept (5.5-12.5s) ─────────── */
+    tl.fromTo("#s2-label-top", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 5.6);
+    tl.fromTo("#s2-line1", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.4, ease: "power2.out" }, 5.6);
+    tl.fromTo("#s2-ghost", { opacity: 0 }, { opacity: 1, duration: 1.2, ease: "sine.out" }, 5.6);
+    tl.fromTo("#s2-statement1", { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 6.0);
+    tl.fromTo("#s2-div1", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.3, ease: "power2.out" }, 6.3);
+    tl.fromTo("#s2-statement2", { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 6.8);
+    tl.fromTo("#s2-div2", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.3, ease: "power2.out" }, 7.1);
+    tl.fromTo("#s2-statement3", { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 7.6);
+    tl.fromTo("#s2-final", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 8.6);
+    tl.fromTo("#s2-glow", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 5.6);
+    tl.to("#s2-glow", { x: 30, y: -20, duration: 3, yoyo: true, repeat: 1, ease: "sine.inOut" }, 6.5);
+    transitionScene(2, 3, 12.5);
+
+    /* ─────────── SCENE 3: AI Host (13-20s) ─────────── */
+    tl.fromTo("#s3-label-top", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 13.1);
+    tl.fromTo("#s3-name", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 13.3);
+    tl.fromTo("#s3-name .highlight-purple", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 13.7);
+    tl.fromTo("#s3-tags", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "sine.out" }, 13.9);
+    tl.fromTo("#s3-desc", { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 14.3);
+    tl.fromTo("#s3-caps .pill-tag", { y: 20, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.4)", stagger: 0.08 }, 14.7);
+    tl.fromTo("#s3-ghost", { opacity: 0 }, { opacity: 1, duration: 1.0, ease: "sine.out" }, 13.1);
+    tl.fromTo("#s3-glow", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: "power2.out" }, 13.0);
+    tl.to("#s3-glow", { scale: 1.05, opacity: 0.7, duration: 2.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 14.0);
+    transitionScene(3, 4, 20.0);
+
+    /* ─────────── SCENE 4: Programming (20.5-27s) ─────────── */
+    tl.fromTo("#s4-label-top", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 20.6);
+    tl.fromTo("#s4-title", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 20.8);
+    tl.fromTo("#s4-ghost", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "sine.out" }, 20.6);
+    tl.fromTo("#s4-timeline", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.5, ease: "power2.out" }, 21.2);
+    tl.fromTo("#s4-progress", { width: "0%" }, { width: "16%", duration: 0.5, ease: "power2.out" }, 21.3);
+    tl.fromTo("#s4-slots .slot-card", { y: 30, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.2)", stagger: 0.06 }, 21.7);
+    tl.fromTo("#s4-slots .slot-card.active", { borderColor: "rgba(108, 99, 255, 0.06)" }, { borderColor: "rgba(108, 99, 255, 0.3)", duration: 0.4, ease: "power2.out" }, 22.3);
+    tl.fromTo("#s4-note .tech-tag", { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power2.out", stagger: 0.1 }, 22.8);
+    tl.fromTo("#s4-glow", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 20.6);
+    tl.to("#s4-progress", { opacity: 0.6, duration: 1.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 22.0);
+    transitionScene(4, 5, 27.0);
+
+    /* ─────────── SCENE 5: Chat & Feedback (27.5-33.5s) ─────────── */
+    tl.fromTo("#s5-label-top", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 27.6);
+    tl.fromTo("#s5-ghost", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "sine.out" }, 27.6);
+    tl.fromTo("#s5-glow1", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 27.6);
+    tl.fromTo("#s5-glow2", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 27.8);
+    tl.fromTo("#s5-chat .bubble.user", { x: 80, opacity: 0, scale: 0.92 }, { x: 0, opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 28.0);
+    tl.fromTo("#s5-bubble-user-label", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 28.0);
+    tl.fromTo("#s5-chat .bubble.codio", { x: -80, opacity: 0, scale: 0.92 }, { x: 0, opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 28.8);
+    tl.fromTo("#s5-bubble-codio-label", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 28.8);
+    tl.fromTo("#s5-feedback .fb-btn", { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.2)", stagger: 0.06 }, 29.6);
+    tl.fromTo("#s5-feedback .tagline-mono", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 29.9);
+    tl.fromTo("#s5-stats > div", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.1 }, 30.3);
+    transitionScene(5, 6, 33.5);
+
+    /* ─────────── SCENE 6: Music Sources (34-39.5s) ─────────── */
+    tl.fromTo("#s6-label-top", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 34.1);
+    tl.fromTo("#s6-title", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 34.3);
+    tl.fromTo("#s6-ghost", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "sine.out" }, 34.1);
+    tl.fromTo("#s6-glow", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 34.1);
+    tl.fromTo("#s6-sources .source-item", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out", stagger: 0.12 }, 34.7);
+    transitionScene(6, 7, 39.5);
+
+    /* ─────────── SCENE 7: Tech Stack (40-46.5s) ─────────── */
+    tl.fromTo("#s7-label-top", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 40.1);
+    tl.fromTo("#s7-title", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 40.3);
+    tl.fromTo("#s7-ghost", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "sine.out" }, 40.1);
+    tl.fromTo("#s7-glow", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 40.1);
+    tl.fromTo("#s7-grid", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 40.1);
+    tl.fromTo("#s7-tags .tech-tag", { y: 20, opacity: 0, scale: 0.92 }, { y: 0, opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.2)", stagger: 0.05 }, 40.7);
+    tl.fromTo("#s7-arch", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 41.5);
+    transitionScene(7, 8, 46.5);
+
+    /* ─────────── SCENE 8: CTA (47-48s) ─────────── */
+    tl.fromTo("#s8-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "expo.out" }, 47.1);
+    tl.fromTo("#s8-ring", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 0.8, duration: 0.8, ease: "expo.out" }, 47.3);
+    tl.fromTo("#s8-ring2", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 0.6, duration: 0.8, ease: "expo.out" }, 47.5);
+    tl.fromTo("#s8-cta", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 47.7);
+    tl.fromTo("#s8-url", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "sine.out" }, 47.8);
+    tl.fromTo("#s8-status", { opacity: 0, letterSpacing: "0.5em" }, { opacity: 1, letterSpacing: "0.2em", duration: 0.6, ease: "power2.out" }, 48.1);
+    tl.to("#fade-overlay", { opacity: 1, duration: 1.0, ease: "power2.in" }, 47.0);
+
+    window.__timelines["main"] = tl;
+  </script>
+</body>
+</html>

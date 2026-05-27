@@ -1,0 +1,29 @@
+[
+  {
+    "source": "local-routine-v1",
+    "label": "深度工作",
+    "activity": "编程 / 写作 / 长时间专注",
+    "intent": "把注意力稳定下来，减少被歌词打断的概率",
+    "musicIntent": "优先选择少人声、稳定律动、轻电子和器乐方向",
+    "displayStyles": ["稳定律动", "少人声", "轻电子"],
+    "timeRange": "09:00-12:00"
+  },
+  {
+    "source": "local-routine-v1",
+    "label": "午后续航",
+    "activity": "下午工作 / 学习 / 创作",
+    "intent": "用明快的节奏驱散困意，保持工作效率",
+    "musicIntent": "优先选择节奏明快、轻电子和城市氛围方向",
+    "displayStyles": ["明快节奏", "轻电子", "城市氛围"],
+    "timeRange": "13:30-18:00"
+  },
+  {
+    "source": "local-routine-v1",
+    "label": "雨天模式",
+    "activity": "雨天办公 / 阅读 / 放松",
+    "intent": "雨天适合安静的音乐和松弛的氛围",
+    "musicIntent": "优先选择钢琴、chill、温暖人声和氛围方向",
+    "displayStyles": ["钢琴", "Chill", "温暖人声", "氛围"],
+    "timeRange": "00:00-23:59"
+  }
+]

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono&display=swap" rel="stylesheet">
+  <title>coldio</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="app" class="device-card">
+    <!-- Header -->
+    <header id="header">
+      <div class="host-info">
+        <img src="/assets/icons/codio-avatar.svg" alt="Codio" class="avatar" width="32" height="32">
+        <span class="host-name">Codio</span>
+        <span class="status-badge" id="hostStatus">CONNECTED</span>
+        <span class="init-badge" id="btnInit">[INIT]</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="weather-widget" id="weatherWidget" style="display:none">
+          <span class="weather-temp" id="weatherTemp"></span>
+          <span class="weather-desc" id="weatherDesc"></span>
+        </div>
+        <button id="btnSearch" class="ctrl-btn" aria-label="Search" style="padding:4px">
+          <img src="/assets/icons/search.svg" alt="Search" width="16" height="16">
+        </button>
+        <div class="header-mode" id="headerMode">DARK</div>
+        <span class="ncm-login-badge" id="ncmLoginBadge">[NCM]</span>
+      </div>
+    </header>
+
+    <!-- Search Panel -->
+    <div id="searchPanel" style="display:none;padding:8px 16px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="searchInput" placeholder="search Netease Music..." autocomplete="off" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-full);padding:6px 12px;font-family:var(--font-sans);font-size:12px;color:var(--text-primary);outline:none">
+        <button id="btnSearchClose" class="ctrl-btn" aria-label="Close search" style="padding:4px">
+          <span style="color:var(--text-secondary);font-family:var(--font-mono);font-size:12px">[x]</span>
+        </button>
+      </div>
+      <div id="searchResults" style="margin-top:8px;max-height:200px;overflow-y:auto;display:none"></div>
+    </div>
+
+    <!-- Clock -->
+    <section id="clock-section">
+      <div id="dotMatrixClock" class="dot-matrix-clock"></div>
+      <div id="dateDisplay" class="date-display"></div>
+    </section>
+
+    <!-- Init Panel -->
+    <div class="init-panel" id="initPanel" style="display:none">
+      <div class="init-panel-header">
+        <span class="init-panel-title">[PROFILE INIT]</span>
+        <span class="init-panel-close" id="btnInitClose">[x]</span>
+      </div>
+
+      <div class="init-panel-body">
+        <!-- 锐评输入 -->
+        <div class="init-section">
+          <div class="init-section-label">锐评输入（可选）</div>
+          <textarea class="init-review-input" id="reviewInput" rows="3" placeholder="粘贴你的锐评文本，例如：&quot;我这个人就是喜欢下雨天听钢琴，晚上必须来点氛围，白天靠电子提神，pop 和城市节奏是真的听不了一点...&quot;"></textarea>
+          <button class="init-parse-btn" id="btnParseReview">[PARSE REVIEW]</button>
+          <span class="init-parse-status" id="parseStatus"></span>
+        </div>
+
+        <div class="init-divider">── 或手动选择 ──</div>
+
+        <!-- 喜欢的方向 -->
+        <div class="init-section">
+          <div class="init-section-label">喜欢的方向</div>
+          <div class="init-tag-group" id="preferredTags">
+            <button class="init-tag" data-tag="piano">piano</button>
+            <button class="init-tag" data-tag="ambient">ambient</button>
+            <button class="init-tag" data-tag="light-electronic">light-electronic</button>
+            <button class="init-tag" data-tag="instrumental">instrumental</button>
+            <button class="init-tag" data-tag="chill">chill</button>
+            <button class="init-tag" data-tag="relax">relax</button>
+            <button class="init-tag" data-tag="acoustic">acoustic</button>
+            <button class="init-tag" data-tag="warm-vocal">warm-vocal</button>
+            <button class="init-tag" data-tag="neo-classical">neo-classical</button>
+            <button class="init-tag" data-tag="steady-groove">steady-groove</button>
+            <button class="init-tag" data-tag="mandarin-pop">mandarin-pop</button>
+            <button class="init-tag" data-tag="rainy-day">rainy-day</button>
+            <button class="init-tag" data-tag="late-night">late-night</button>
+            <button class="init-tag" data-tag="city">city</button>
+            <button class="init-tag" data-tag="rhythm-pop">rhythm-pop</button>
+          </div>
+        </div>
+
+        <!-- 不喜欢的方向 -->
+        <div class="init-section">
+          <div class="init-section-label init-section-label-dislike">不喜欢的方向</div>
+          <div class="init-tag-group" id="dislikedTags">
+            <button class="init-tag" data-tag="piano">piano</button>
+            <button class="init-tag" data-tag="ambient">ambient</button>
+            <button class="init-tag" data-tag="light-electronic">light-electronic</button>
+            <button class="init-tag" data-tag="instrumental">instrumental</button>
+            <button class="init-tag" data-tag="chill">chill</button>
+            <button class="init-tag" data-tag="relax">relax</button>
+            <button class="init-tag" data-tag="acoustic">acoustic</button>
+            <button class="init-tag" data-tag="warm-vocal">warm-vocal</button>
+            <button class="init-tag" data-tag="neo-classical">neo-classical</button>
+            <button class="init-tag" data-tag="steady-groove">steady-groove</button>
+            <button class="init-tag" data-tag="mandarin-pop">mandarin-pop</button>
+            <button class="init-tag" data-tag="rainy-day">rainy-day</button>
+            <button class="init-tag" data-tag="late-night">late-night</button>
+            <button class="init-tag" data-tag="city">city</button>
+            <button class="init-tag" data-tag="rhythm-pop">rhythm-pop</button>
+          </div>
+        </div>
+
+        <!-- 能量偏好 -->
+        <div class="init-section">
+          <div class="init-section-label">能量偏好</div>
+          <div class="init-tag-group" id="energyTags">
+            <button class="init-tag init-tag-single" data-tag="low">low</button>
+            <button class="init-tag init-tag-single" data-tag="low-to-medium">low-to-medium</button>
+            <button class="init-tag init-tag-single" data-tag="medium">medium</button>
+          </div>
+        </div>
+
+        <!-- 场景偏好 -->
+        <div class="init-section">
+          <div class="init-section-label">偏好的场景</div>
+          <div class="init-tag-group" id="sceneTags">
+            <button class="init-tag" data-tag="morning">morning</button>
+            <button class="init-tag" data-tag="work">work</button>
+            <button class="init-tag" data-tag="noon">noon</button>
+            <button class="init-tag" data-tag="afternoon">afternoon</button>
+            <button class="init-tag" data-tag="evening">evening</button>
+            <button class="init-tag" data-tag="night">night</button>
+          </div>
+        </div>
+
+        <!-- 回避场景 -->
+        <div class="init-section">
+          <div class="init-section-label init-section-label-dislike">回避的场景</div>
+          <div class="init-tag-group" id="avoidedSceneTags">
+            <button class="init-tag" data-tag="morning">morning</button>
+            <button class="init-tag" data-tag="work">work</button>
+            <button class="init-tag" data-tag="noon">noon</button>
+            <button class="init-tag" data-tag="afternoon">afternoon</button>
+            <button class="init-tag" data-tag="evening">evening</button>
+            <button class="init-tag" data-tag="night">night</button>
+          </div>
+        </div>
+
+        <button class="init-save-btn" id="btnSaveInit">[SAVE & INIT]</button>
+      </div>
+    </div>
+    <section id="player-section">
+      <div class="on-air" id="onAirIndicator">
+        <span class="on-air-dot" id="onAirDot"></span>
+        <span class="on-air-label">ON AIR</span>
+        <span class="slot-label" id="slotLabel">[LOADING...]</span>
+        <span class="slot-toggle" id="slotToggle">[SLOTS]</span>
+        <span class="slot-toggle" id="profileToggle">[PROFILE]</span>
+        <span class="slot-toggle" id="historyToggle">[HISTORY]</span>
+        <span class="slot-toggle" id="routinesToggle">[ROUTINES]</span>
+      </div>
+
+      <!-- Program Slots Panel -->
+      <div class="slots-panel" id="slotsPanel" style="display:none">
+        <div class="slots-list" id="slotsList"></div>
+      </div>
+
+      <!-- Profile Panel -->
+      <div class="slots-panel" id="profilePanel" style="display:none">
+        <div class="profile-section">
+          <div class="profile-section-title">[FAVORITE TRACKS]</div>
+          <div id="favoriteTracksList" class="profile-track-list"></div>
+        </div>
+        <div class="profile-section" style="margin-top:var(--space-sm)">
+          <div class="profile-section-title profile-section-title-dislike">[DISLIKED TRACKS]</div>
+          <div id="dislikedTracksList" class="profile-track-list"></div>
+        </div>
+      </div>
+
+      <!-- History Panel -->
+      <div class="slots-panel" id="historyPanel" style="display:none">
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <!-- Routines Editor Panel -->
+      <div class="slots-panel" id="routinesPanel" style="display:none">
+        <div class="routines-editor" id="routinesEditor"></div>
+      </div>
+
+      <div class="track-info">
+        <div class="track-title" id="trackTitle">[LOADING...]</div>
+        <div class="track-artist" id="trackArtist"></div>
+        <div class="track-meta">
+          <span class="track-source" id="trackSource">Codio Selection</span>
+          <span class="track-direction" id="trackDirection"></span>
+        </div>
+      </div>
+
+      <div class="progress-bar" id="progressBar"></div>
+
+      <div class="controls">
+        <button id="btnPrev" class="ctrl-btn" aria-label="Previous">
+          <img src="/assets/icons/prev.svg" alt="Prev" width="18" height="18">
+        </button>
+        <button id="btnPlayPause" class="ctrl-btn play-btn" aria-label="Play/Pause">
+          <img src="/assets/icons/play.svg" alt="Play" width="24" height="24" id="playIcon">
+        </button>
+        <button id="btnNext" class="ctrl-btn" aria-label="Next">
+          <img src="/assets/icons/next.svg" alt="Next" width="18" height="18">
+        </button>
+
+        <div class="spacer"></div>
+
+        <button id="btnHeart" class="ctrl-btn heart-btn" aria-label="Like">
+          <img src="/assets/icons/heart.svg" alt="Like" width="16" height="16">
+        </button>
+
+        <span class="timer-btn" id="timerBtn">[TIMER]</span>
+
+        <div class="volume-control">
+          <button id="btnMute" class="ctrl-btn" aria-label="Mute">
+            <img src="/assets/icons/volume.svg" alt="Volume" width="16" height="16" id="volumeIcon">
+          </button>
+          <div class="volume-slider" id="volumeSlider"></div>
+        </div>
+      </div>
+
+      <div class="audio-level-bar" id="audioLevelBar">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div id="hostVoiceIndicator" class="host-voice-indicator" style="display:none">HOST VOICE</div>
+
+      <!-- Lyrics Toggle -->
+      <div class="lyrics-toggle" id="lyricsToggle">
+        <span class="lyrics-toggle-label" id="lyricsToggleLabel">[+ LYRICS]</span>
+      </div>
+      <div class="lyrics-panel" id="lyricsPanel" style="display:none">
+        <div class="lyrics-content" id="lyricsContent">
+          <div class="lyrics-placeholder">click [LYRICS] to load lyrics</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat -->
+    <section id="chat-section">
+      <div class="chat-status" id="chatStatus">
+        <span class="status-dot"></span>
+        <span id="chatStatusText">Connected to Codio planner</span>
+        <span class="chat-clear" id="chatClear">[CLEAR]</span>
+      </div>
+
+      <div id="chatMessages" class="chat-messages"></div>
+
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="tell me how you're feeling..." autocomplete="off">
+        <button id="btnMic" class="ctrl-btn mic-btn" aria-label="Voice input">
+          <img src="/assets/icons/mic.svg" alt="Mic" width="16" height="16" id="micIcon">
+        </button>
+        <button id="btnSend" class="ctrl-btn send-btn" aria-label="Send">
+          <img src="/assets/icons/send.svg" alt="Send" width="18" height="18">
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+      <span class="footer-brand">CODIO FM.</span>
+      <span class="footer-status" id="connectionStatus">CONNECTED</span>
+    </footer>
+
+    <!-- NCM Login Modal -->
+    <div id="ncmLoginModal" class="ncm-login-overlay" style="display:none">
+      <div class="ncm-login-card">
+        <div class="ncm-login-header">
+          <span class="ncm-login-title">[NCM LOGIN]</span>
+          <span class="ncm-login-close" id="ncmLoginClose">[x]</span>
+        </div>
+        <div class="ncm-login-body">
+          <div id="ncmQrContainer">
+            <img id="ncmQrImage" src="" alt="QR Code">
+            <p id="ncmQrStatus">获取二维码...</p>
+          </div>
+          <button class="ncm-refresh-btn" id="ncmRefreshQr">[REFRESH QR]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+node_modules/
+.env
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/ncm-cookies.txt
+audio-cache/
+cache/tts/
+.DS_Store
+.thumbnails/
+renders/
+voiceover/

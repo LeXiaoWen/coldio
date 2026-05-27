@@ -1,0 +1,19 @@
+{
+  "name": "coldio",
+  "version": "0.2.0",
+  "description": "Your private AI radio. 24/7.",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "ncm": "cd NeteaseCloudMusicApi && node app.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "better-sqlite3": "^11.0.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.19.0",
+    "sharp": "^0.34.5",
+    "ws": "^8.17.0"
+  }
+}
